@@ -9,6 +9,7 @@
 	<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Work+Sans&display=swap" rel="stylesheet">
 	<meta name="description" content="">
 	<link rel="stylesheet" href="./assets/style.css">
+	<script src="https://kit.fontawesome.com/87fc74ebcc.js" crossorigin="anonymous"></script>
 	<script src="/FrontEnd/JavaScript/app.js" defer></script>
 </head>
 <body>
@@ -37,6 +38,16 @@
 	</section>
 	<section id="portfolio">
 		<h2>Mes Projets</h2>
+			<a href="#modal" id="openModalBtn"><i class="fa-regular fa-pen-to-square"></i> Modifier</a>
+			<aside id="modal" class="modal" aria-hidden="true" aria-labelledby="modalTitle" role="dialog">
+				<div class="modal-content">
+					<button class="closeBtn" aria-label="Fermer la modale">&times;</button>
+					<h2 id="modalTitle">Gestion des Photos</h2>
+					<div id="photoGallery"></div>
+					<input type="file" id="photoInput" accept="image/*">
+					<button id="uploadPhotoBtn">Ajouter Photo</button>
+				</div>
+			</aside>
 		<div class="filter">
 		</div>
 		<div class="gallery">

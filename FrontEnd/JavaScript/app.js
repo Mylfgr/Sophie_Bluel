@@ -4,6 +4,7 @@ const baseApiUrl = "http://localhost:5678/api/";
 // Variables globales pour stocker les données des travaux et des catégories
 let worksData, categories;
 let filter, gallery;
+let modal;
 
 // Fonction exécutée au chargement de la fenêtre
 window.onload = async () => {
@@ -67,6 +68,7 @@ const initFilter = (filter, categories) => {
   addFilterListeners();
 };
 
+
 // Fonction pour ajouter des écouteurs d'événements sur les boutons de filtre
 const addFilterListeners = () => {
   // Sélection de tous les boutons de filtre et ajout d'un écouteur de clic
@@ -86,3 +88,88 @@ const toggleProjects = (category) => {
     figure.style.display = category === "Tous" || figure.dataset.category === category ? "block" : "none";
   });
 };
+
+
+// MODALE
+
+document.addEventListener('DOMContentLoaded', () => {
+  const modal = document.getElementById('modal');
+  const openModalBtn = document.getElementById('openModalBtn');
+  const closeBtn = document.querySelector('.closeBtn');
+  const photoGallery = document.getElementById('photoGallery');
+  const photoInput = document.getElementById('photoInput');
+  const uploadPhotoBtn = document.getElementById('uploadPhotoBtn');
+  const API_URL = 'https://api.example.com/photos'; // Remplacez par votre API
+
+  openModalBtn.addEventListener('click', () => {
+      modal.style.display = 'block';
+      modal.setAttribute('aria-hidden', 'false');
+      fetchPhotos();
+  });
+
+  closeBtn.addEventListener('click', () => {
+      modal.style.display = 'none';
+      modal.setAttribute('aria-hidden', 'true');
+  });
+
+  window.addEventListener('click', (event) => {
+      if (event.target === modal) {
+          modal.style.display = 'none';
+          modal.setAttribute('aria-hidden', 'true');
+      }
+  });
+
+  uploadPhotoBtn.addEventListener('click', () => {
+      const file = photoInput.files[0];
+      if (file) {
+          const formData = new FormData();
+          formData.append('photo', file);
+
+          fetch(API_URL, {
+              method: 'POST',
+              body: formData
+          })
+          .then(response => response.json())
+          .then(data => {
+              console.log('Success:', data);
+              fetchPhotos();
+          })
+          .catch((error) => {
+              console.error('Error:', error);
+          });
+      }
+  });
+
+  function fetchPhotos() {
+      fetch(API_URL)
+          .then(response => response.json())
+          .then(data => {
+              photoGallery.innerHTML = '';
+              data.forEach(photo => {
+                  const img = document.createElement('img');
+                  img.src = photo.url;
+                  img.alt = 'Photo';
+                  img.dataset.id = photo.id;
+                  img.addEventListener('click', () => deletePhoto(photo.id));
+                  photoGallery.appendChild(img);
+              });
+          })
+          .catch((error) => {
+              console.error('Error:', error);
+          });
+  }
+
+  function deletePhoto(id) {
+      fetch(`${API_URL}/${id}`, {
+          method: 'DELETE'
+      })
+      .then(response => response.json())
+      .then(data => {
+          console.log('Deleted:', data);
+          fetchPhotos();
+      })
+      .catch((error) => {
+          console.error('Error:', error);
+      });
+  }
+});
